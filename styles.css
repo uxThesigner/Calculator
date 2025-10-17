@@ -48,7 +48,7 @@ body {
     margin-bottom: 5px;
     font-weight: bold;
     color: #ffffff; /* COR BRANCA (Ajuste reforçado) */
-    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.049);
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.029);
 }
 
 /* Estilos para os inputs e selects (campos de digitação) */
@@ -160,3 +160,4 @@ hr {
         padding: 10px;
     }
 }
+
