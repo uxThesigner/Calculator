@@ -124,7 +124,7 @@ function calcularProposta() {
     }
     
     // --- 3. VALIDAÇÃO DE REGRA DE ENTRADA (15% a 30%) ---
-    const MIN_ENTRADA_PERC = 0.15;
+    const MIN_ENTRADA_PERC = 0.10;
     const MAX_ENTRADA_PERC = 0.30;
     
     const V_ENTRADA_MIN = V_CREDITO * MIN_ENTRADA_PERC;
