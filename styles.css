@@ -1,81 +1,162 @@
+/* GERAIS - Aplica a imagem de fundo em todo o corpo */
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
+    display: flex; /* Para centralizar o simulador */
+    justify-content: center; /* Centraliza horizontalmente */
+    align-items: center; /* Centraliza verticalmente */
+    min-height: 100vh; /* Garante que o body ocupe a altura total da tela */
     margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+
+    /* IMAGEM DE FUNDO - Certifique-se que o nome do arquivo está correto */
+    background-image: url('colheitadeira.jpg'); 
+    background-size: cover; 
+    background-position: center; 
+    background-repeat: no-repeat;
+    background-attachment: fixed;
 }
 
 .calculator-container {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 450px;
-}
-
-h2 {
-    color: rgb(0, 92, 26);
+    max-width: 500px; /* Largura máxima para desktops */
+    padding: 30px;
+    border-radius: 15px;
     text-align: center;
-    margin-bottom: 25px;
+    box-sizing: border-box;
+
+    /* NOVO EFEITO GLASSMORPHISM */
+    background-color: rgba(0, 0, 0, 0.25); /* Fundo preto/escuro com 25% de opacidade */
+    backdrop-filter: blur(12px); /* Borrão */
+    -webkit-backdrop-filter: blur(12px); 
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); 
+    color: #fff; /* Cor do texto principal */
 }
 
-.input-group {
-    margin-bottom: 15px;
+/* Títulos dentro do container */
+.calculator-container h2,
+.results-box h3 {
+    color: #ffffff; 
+    margin-bottom: 20px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.256);
 }
 
+/* Estilos para as labels (TÍTULO DE CADA INPUT) */
 .input-group label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #ffffff; /* COR BRANCA (Ajuste reforçado) */
+    text-shadow: 1px 1px 2px rgba(255, 255, 255, 0.049);
 }
 
-.input-group input[type="number"] {
-    width: calc(100% - 10px);
+/* Estilos para os inputs e selects (campos de digitação) */
+.input-group input, 
+.input-group select {
+    width: calc(100% - 20px);
     padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.4); 
+    border-radius: 6px;
     box-sizing: border-box;
+    
+    background-color: rgba(255, 255, 255, 0.9); /* Fundo quase branco */
+    
+    color: #000; /* Texto digitado preto */
+    font-weight: bold; 
+    
+    outline: none;
+}
+/* Placeholder dos inputs */
+.input-group input::placeholder {
+    color: #333; 
+    font-weight: normal; 
 }
 
+/* Altera a cor e o estilo do texto dentro de CADA OPÇÃO (dropdown) */
+.input-group select option {
+    color: #000;
+    font-weight: bold; 
+}
+
+/* Estilo para o botão */
 button {
-    width: 100%;
-    padding: 12px;
-    background-color: rgb(0, 92, 26);
+    background-color: #4CAF50;
     color: white;
+    padding: 12px 20px;
     border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    border-radius: 8px;
     cursor: pointer;
-    transition: background-color 0.3s;
-    margin-top: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
 button:hover {
-    background-color: #61ec61;
+    background-color: #45a049;
+    transform: translateY(-2px);
 }
 
+/* Caixa de resultados */
 .results-box {
-    border-top: 2px solid #00458a;
     margin-top: 25px;
-    padding-top: 20px;
-}
-
-.results-box h3 {
-    color: #00458a;
-    margin-top: 0;
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .results-box p {
     margin: 8px 0;
-    font-size: 15px;
+    text-align: left;
+    color: #fff; /* Texto dos resultados principal branco */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.final-result {
-    font-size: 17px;
+.results-box p span {
     font-weight: bold;
-    color: #d32f2f; /* Cor de destaque para o saldo final */
+}
+
+/* Linha separadora */
+hr {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+    margin: 15px 0;
+}
+
+/* Mensagem de erro */
+#mensagemErro {
+    color: #FFEB3B !important; 
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    font-size: 1.1em;
+    margin-top: 15px;
+}
+
+/* Estilo para destaque VERDE (Saldo Devedor) */
+.green-highlight {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #8BC34A; 
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+}
+
+/* Estilo para o texto explicativo (finos e pequenos) */
+.taxa-explicativa {
+    font-size: 0.8em;
+    font-weight: normal;
+    color: #fff; /* NOVO: Cor BRANCA sólida (era rgba(255, 255, 255, 0.8)) */
+    display: block;
+    margin-top: 2px;
+    text-shadow: none;
+}
+
+/* Mídias queries para responsividade */
+@media (max-width: 600px) {
+    .calculator-container {
+        padding: 20px;
+        border-radius: 10px;
+    }
+    body {
+        padding: 10px;
+    }
 }
