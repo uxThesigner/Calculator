@@ -25,7 +25,7 @@ body {
     text-align: center;
     box-sizing: border-box;
 
-    /* NOVO EFEITO GLASSMORPHISM */
+    /* EFEITO GLASSMORPHISM */
     background-color: rgba(0, 0, 0, 0.25); /* Fundo preto/escuro com 25% de opacidade */
     backdrop-filter: blur(12px); /* Borrão */
     -webkit-backdrop-filter: blur(12px); 
@@ -37,9 +37,9 @@ body {
 /* Títulos dentro do container */
 .calculator-container h2,
 .results-box h3 {
-    color: #ffffff; 
+    color: #fff; 
     margin-bottom: 20px;
-    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.256);
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
 }
 
 /* Estilos para as labels (TÍTULO DE CADA INPUT) */
@@ -47,8 +47,9 @@ body {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    color: #ffffff; /* COR BRANCA (Ajuste reforçado) */
-    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.029);
+    /* Cor branca reforçada para evitar acinzentamento */
+    color: #fff !important; 
+    text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7); 
 }
 
 /* Estilos para os inputs e selects (campos de digitação) */
@@ -80,7 +81,7 @@ body {
     font-weight: bold; 
 }
 
-/* Estilo para o botão */
+/* Estilo para o botão "Calcular Proposta" */
 button {
     background-color: #4CAF50;
     color: white;
@@ -92,6 +93,9 @@ button {
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    /* Garante que o botão Calcular sempre tenha 100% da largura, igual ao botão de ação */
+    width: 100%; 
+    box-sizing: border-box;
 }
 
 button:hover {
@@ -144,11 +148,48 @@ hr {
 .taxa-explicativa {
     font-size: 0.8em;
     font-weight: normal;
-    color: #fff; /* NOVO: Cor BRANCA sólida (era rgba(255, 255, 255, 0.8)) */
+    color: #fff; /* Cor BRANCA sólida */
     display: block;
     margin-top: 2px;
     text-shadow: none;
 }
+
+/* ======================================================= */
+/* ESTILO PARA O BOTÃO DE AÇÃO (WHATSAPP) - IDÊNTICO AO BOTÃO ACIMA */
+/* ======================================================= */
+
+.action-button-container {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+#actionButton {
+    /* Faz o link (<a>) ter o mesmo visual de um botão */
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    text-decoration: none; 
+    
+    /* Herda o estilo do <button> principal */
+    background-color: #4CAF50; 
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1.1em;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+}
+
+#actionButton:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
+}
+
 
 /* Mídias queries para responsividade */
 @media (max-width: 600px) {
@@ -160,4 +201,3 @@ hr {
         padding: 10px;
     }
 }
-
