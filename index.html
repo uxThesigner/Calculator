@@ -4,46 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Crédito</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        /* Estilo para destaque VERDE (Saldo Devedor) */
-        .green-highlight {
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #008000; /* Verde escuro */
-        }
-        /* Estilo para o texto explicativo (usado para taxa e % de entrada) */
-        .taxa-explicativa {
-            font-size: 0.8em;
-            font-weight: normal;
-            color: #777; /* Cinza claro */
-            display: block;
-            margin-top: 2px;
-        }
-        /* Removendo o destaque azul antigo (.final-result) ou redefinindo se ele existe */
-        .final-result {
-            font-weight: bold;
-            font-size: 1.0em; /* Padrão */
-            color: inherit; /* Volta para a cor normal do texto */
-        }
-        
-        /* Ajuste simples para o novo layout de input-group */
-        .input-group label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #555;
-        }
-        .input-group input, .input-group select {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            box-sizing: border-box;
-        }
-    </style>
-</head>
+    <link rel="stylesheet" href="styles.css"> 
+    </head>
 <body>
     <div class="calculator-container">
         
@@ -109,6 +71,14 @@
             <p>Dívida Total Bruta: <span id="resultadoDividaBruta">R$ 0,00</span></p>
             
             <p class="green-highlight">SALDO DEVEDOR FINAL: <span id="resultadoSaldoDevedor">R$ 0,00</span></p>
+
+            <hr>
+
+            <div class="action-button-container">
+                <a href="#" id="actionButton" target="_blank"> 
+                    Enviar Proposta via WhatsApp
+                </a>
+            </div>
 
         </div>
     </div>
