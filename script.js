@@ -13,10 +13,30 @@ const MAPA_DE_TAXAS = {
 };
 
 // *****************************************************************
-// IMPORTANTE: NOVO NÚMERO DE WHATSAPP
+// IMPORTANTE: Número de WhatsApp PADRÃO (FALLBACK)
+// Este número será usado SE o consultor NÃO colocar o seu número no link (ex: ?wpp=...)
 // *****************************************************************
-const WHATSAPP_NUMBER = "5541985162191"; // +55 41 9 8516 2191
+const WHATSAPP_NUMBER_DEFAULT = "5581985162191"; // Ex: Número da Central ou do seu próprio WhatsApp
 // *****************************************************************
+
+// NOVA FUNÇÃO: Obtém o número do WhatsApp da URL (Parâmetro ?wpp=)
+function getWhatsAppNumberFromUrl() {
+    // 1. Cria um objeto que lê os parâmetros (ex: ?wpp=5511987654321)
+    const urlParams = new URLSearchParams(window.location.search);
+    
+    // 2. Tenta obter o valor do parâmetro 'wpp'
+    let wpp = urlParams.get('wpp');
+    
+    // 3. Se o parâmetro 'wpp' foi encontrado e não está vazio, retorna o número limpo.
+    if (wpp) {
+        // Remove quaisquer caracteres que não sejam números (ex: +, -, espaços)
+        return wpp.replace(/\D/g, ''); 
+    }
+    
+    // 4. Se não encontrar, retorna o número padrão de fallback
+    return WHATSAPP_NUMBER_DEFAULT;
+}
+
 
 // ====================================================================
 // FUNÇÕES DE FORMATAÇÃO E AUXILIARES
@@ -102,7 +122,7 @@ function calcularProposta() {
         return;
     }
     
-    const MIN_ENTRADA_PERC = 0.10;
+    const MIN_ENTRADA_PERC = 0.15;
     const MAX_ENTRADA_PERC = 0.30;
     const V_ENTRADA_MIN = V_CREDITO * MIN_ENTRADA_PERC;
     const V_ENTRADA_MAX = V_CREDITO * MAX_ENTRADA_PERC;
@@ -139,14 +159,17 @@ function calcularProposta() {
     document.getElementById('resultadoSaldoDevedor').textContent = formatarMoeda(V_SALDO_DEVEDOR);
 
 
-    // --- 4. GERAR O LINK DO WHATSAPP (FORMATADO) ---
+    // --- 4. GERAR O LINK DO WHATSAPP (AGORA DINÂMICO) ---
     const linkButton = document.getElementById('actionButton');
     
-    // Constrói a mensagem com formatação bonita (negrito * e quebras de linha)
+    // OBTEM O NÚMERO DINÂMICO DA URL OU O PADRÃO
+    const TARGET_WHATSAPP_NUMBER = getWhatsAppNumberFromUrl(); 
+    
+    // Constrói a mensagem com formatação
     const mensagemWhatsApp = `
 *PROPOSTA DE CRÉDITO SIMULADA*
-
-Olá consultor Paulo! Gostaria de formalizar a seguinte proposta de crédito:
+    
+Olá! Gostaria de formalizar a seguinte proposta de crédito:
 
 *Detalhes da Proposta:*
 -------------------------------------
@@ -165,7 +188,7 @@ Por favor, podemos dar o próximo passo para a formalização!
     `.trim(); 
 
     // Codifica a mensagem para URL e monta o link
-    const linkWhatsApp = `https://api.whatsapp.com/send?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(mensagemWhatsApp)}`;
+    const linkWhatsApp = `https://api.whatsapp.com/send?phone=${TARGET_WHATSAPP_NUMBER}&text=${encodeURIComponent(mensagemWhatsApp)}`;
 
     // Aplica o link ao botão
     linkButton.href = linkWhatsApp;
