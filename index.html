@@ -5,56 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Crédito</title>
     <link rel="stylesheet" href="styles.css"> 
-    </head>
+</head>
 <body>
     <div class="calculator-container">
         
-        <h2>Simulador de Crédito</h2> 
+        <h2 id="welcomeTitle">Olá, bem-vindo(a)!</h2> 
         
-        <div class="input-group">
-            <label for="categoria">Categoria:</label>
-            <select id="categoria">
-                <option value="rural">Crédito Rural</option>
-                <option value="imoveis">Crédito para Imóveis</option>
-                <option value="carro_moto">Crédito para Carro e Moto</option>
-                <option value="caminhoes">Crédito para Caminhões e Frota</option>
-                <option value="maquinas">Crédito para Máquinas Pesadas</option>
-                <option value="servicos">Crédito para Serviços</option>
-                <option value="capital_giro">Crédito para Capital de Giro</option>
-            </select>
+        <div class="input-step" id="step1">
+            <div class="input-group">
+                <label for="nomeCliente">1. Qual seu nome completo?</label>
+                <input type="text" id="nomeCliente" value="" placeholder="Digite seu nome" autocomplete="off">
+            </div>
+            <button class="next-step-btn" onclick="validateStep1()">Próximo</button>
         </div>
 
-        <div class="input-group">
-            <label for="vlrCredito">Valor do Crédito R$:</label>
-            <input type="text" id="vlrCredito" value="650.000,00" oninput="formatarInput(this)">
+        <div class="input-step" id="step2" style="display: none;">
+            <div class="input-group">
+                <label for="localizacao">2. De onde você é? (Cidade/Estado)</label>
+                <input type="text" id="localizacao" value="" placeholder="Ex: São Paulo, SP ou Lisboa, Portugal" autocomplete="off">
+            </div>
+            <button class="next-step-btn" onclick="validateStep2()">Próximo: Categoria</button>
         </div>
         
-        <div class="input-group">
-            <label for="vlrEntrada">Valor de Entrada R$:</label>
-            <input type="text" id="vlrEntrada" value="0,00" oninput="formatarInput(this)">
+        <div class="input-step" id="step3" style="display: none;">
+            <div class="input-group">
+                <label for="categoria">3. Categoria do Crédito:</label>
+                <select id="categoria" onchange="showNextStep('step4')">
+                    <option value="" disabled selected>Selecione a Categoria</option>
+                    <option value="rural">Crédito Rural</option>
+                    <option value="imoveis">Crédito para Imóveis</option>
+                    <option value="carro_moto">Crédito para Carro e Moto</option>
+                    <option value="caminhoes">Crédito para Caminhões e Frota</option>
+                    <option value="maquinas">Crédito para Máquinas Pesadas</option>
+                    <option value="servicos">Crédito para Serviços</option>
+                    <option value="capital_giro">Crédito para Capital de Giro</option>
+                </select>
+            </div>
         </div>
 
-        <div class="input-group">
-            <label for="vlrParcela">Valor da Parcela R$:</label>
-            <input type="text" id="vlrParcela" value="4.000,00" oninput="formatarInput(this)">
+        <div class="input-step" id="step4" style="display: none;">
+            <div class="input-group">
+                <label for="vlrCredito">4. Valor do Crédito R$:</label>
+                <input type="text" id="vlrCredito" value="" placeholder="Ex: 50.000,00" oninput="formatarInput(this)">
+            </div>
+            <button class="next-step-btn" onclick="validateStep4()">Próximo: Valor de Entrada</button>
         </div>
         
-        <button onclick="calcularProposta()">Calcular Proposta</button>
+        <div class="input-step" id="step5" style="display: none;">
+            <div class="input-group">
+                <label for="vlrEntrada">5. Valor de Entrada R$:</label>
+                <input type="text" id="vlrEntrada" value="" placeholder="Ex: 10.000,00" oninput="formatarInput(this)">
+            </div>
+            <button class="next-step-btn" onclick="validateStep5()">Próximo: Valor da Parcela</button> 
+        </div>
 
+        <div class="input-step" id="step6" style="display: none;">
+            <div class="input-group">
+                <label for="vlrParcela">6. Valor da Parcela R$:</label>
+                <input type="text" id="vlrParcela" value="" placeholder="Ex: 850,00" oninput="formatarInput(this)">
+            </div>
+            <button class="calculate-btn" onclick="calcularProposta()">Calcular Proposta</button>
+        </div>
+        
         <div id="mensagemErro" style="color: red; font-weight: bold; margin-top: 15px;"></div>
 
         <div class="results-box" id="resultsBox" style="display: none;">
-            <h3>Resultado da Proposta</h3>
+            <h3>Resumo da Proposta</h3>
+            
+            <p>Cliente: <span id="resultadoNomeCliente"></span></p>
+            <p>Localização: <span id="resultadoLocalizacao"></span></p>
+            <hr>
             
             <p>Categoria do Crédito: <span id="resultadoCategoria">Não selecionado</span></p> 
-            
             <p>Valor do Crédito: <span id="resultadoCredito">R$ 0,00</span></p>
-            
             <p>Valor de Entrada: 
                 <span id="resultadoVlrEntrada">R$ 0,00</span>
                 <span class="taxa-explicativa">(Representa <span id="resultadoPercEntrada">0%</span> do Crédito)</span>
             </p> 
-            
             <p>Valor da Parcela: <span id="resultadoParcela">R$ 0,00</span></p>
             
             <hr>
@@ -80,6 +107,7 @@
                 </a>
             </div>
 
+            <button class="next-step-btn" id="resetButton" onclick="resetSimulation()">Refazer Simulação</button>
         </div>
     </div>
     <script src="script.js"></script>
