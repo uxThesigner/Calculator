@@ -1,5 +1,5 @@
 // ====================================================================
-// MAPA DE TAXAS POR CATEGORIA - DEFINIDO PELO USUÁRIO
+// MAPA DE TAXAS E WHATSAPP DEFAULT
 // ====================================================================
 const MAPA_DE_TAXAS = {
     'rural': 17.5,
@@ -9,49 +9,64 @@ const MAPA_DE_TAXAS = {
     'maquinas': 17.5,
     'servicos': 20.5,
     'capital_giro': 20.5,
-    'default': 20.5 // Taxa padrão de segurança
+    'default': 20.5 
 };
+const WHATSAPP_NUMBER_DEFAULT = "5541985162191"; 
 
-// *****************************************************************
-// IMPORTANTE: Número de WhatsApp PADRÃO (FALLBACK)
-// Este número será usado SE o consultor NÃO colocar o seu número no link (ex: ?wpp=...)
-// *****************************************************************
-const WHATSAPP_NUMBER_DEFAULT = "5581985162191"; // Ex: Número da Central ou do seu próprio WhatsApp
-// *****************************************************************
+// ====================================================================
+// FUNÇÕES DE NAVEGAÇÃO E UTILS
+// ====================================================================
 
-// NOVA FUNÇÃO: Obtém o número do WhatsApp da URL (Parâmetro ?wpp=)
 function getWhatsAppNumberFromUrl() {
-    // 1. Cria um objeto que lê os parâmetros (ex: ?wpp=5511987654321)
     const urlParams = new URLSearchParams(window.location.search);
-    
-    // 2. Tenta obter o valor do parâmetro 'wpp'
     let wpp = urlParams.get('wpp');
-    
-    // 3. Se o parâmetro 'wpp' foi encontrado e não está vazio, retorna o número limpo.
-    if (wpp) {
-        // Remove quaisquer caracteres que não sejam números (ex: +, -, espaços)
-        return wpp.replace(/\D/g, ''); 
-    }
-    
-    // 4. Se não encontrar, retorna o número padrão de fallback
-    return WHATSAPP_NUMBER_DEFAULT;
+    return (wpp) ? wpp.replace(/\D/g, '') : WHATSAPP_NUMBER_DEFAULT;
 }
 
+// Garante que apenas o passo atual esteja visível
+function showNextStep(nextStepId) {
+    document.querySelectorAll('.input-step').forEach(step => {
+        step.style.display = 'none';
+    });
+    
+    // CORREÇÃO: Garante que a caixa de resultados e o erro estejam sempre ocultos/limpos ao mudar de passo
+    document.getElementById('resultsBox').style.display = 'none';
+    document.getElementById('mensagemErro').textContent = ''; 
+    
+    const nextStep = document.getElementById(nextStepId);
+    if (nextStep) {
+        nextStep.style.display = 'block';
+    }
+}
 
-// ====================================================================
-// FUNÇÕES DE FORMATAÇÃO E AUXILIARES
-// ====================================================================
+function resetSimulation() {
+    // Limpa inputs
+    document.getElementById('nomeCliente').value = '';
+    document.getElementById('localizacao').value = '';
+    document.getElementById('categoria').value = ''; 
+    document.getElementById('vlrCredito').value = '';
+    document.getElementById('vlrEntrada').value = '';
+    document.getElementById('vlrParcela').value = '';
+
+    // Reseta título e volta ao passo 1
+    document.getElementById('welcomeTitle').textContent = 'Olá, bem-vindo(a)!';
+    showNextStep('step1');
+}
+
+function exibirErro(mensagem) {
+    // Garante que a caixa de resultados não apareça com erro
+    document.getElementById('resultsBox').style.display = 'none';
+    document.getElementById('mensagemErro').textContent = mensagem;
+}
 
 function formatarInput(input) {
-    let valor = input.value;
-    valor = valor.replace(/\D/g, ''); 
+    let valor = input.value.replace(/\D/g, ''); 
     let numero = valor ? parseInt(valor) / 100 : 0;
     input.value = numero.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function parseMonetary(valorString) {
-    let valorLimpo = valorString.replace(/\./g, '');
-    valorLimpo = valorLimpo.replace(/,/g, '.');
+    let valorLimpo = valorString.replace(/\./g, '').replace(/,/g, '.');
     return parseFloat(valorLimpo) || 0;
 }
 
@@ -69,84 +84,122 @@ function obterTaxa(categoria) {
 }
 
 // ====================================================================
-// FUNÇÕES DE AÇÃO PRINCIPAIS
+// VALIDAÇÕES DE CADA PASSO
 // ====================================================================
 
-function limparResultados() {
-    const TAXA_PADRAO_PERC = MAPA_DE_TAXAS['default'];
-    
-    document.getElementById('mensagemErro').textContent = '';
-    document.getElementById('resultsBox').style.display = 'none';
+function validateStep1() {
+    const nomeInput = document.getElementById('nomeCliente');
+    const nome = nomeInput.value.trim();
 
-    document.getElementById('resultadoCategoria').textContent = 'Não selecionado';
-    document.getElementById('resultadoCredito').textContent = formatarMoeda(0);
-    document.getElementById('resultadoVlrEntrada').textContent = formatarMoeda(0);
-    document.getElementById('resultadoPercEntrada').textContent = `0%`;
-    document.getElementById('resultadoParcela').textContent = formatarMoeda(0);
-    document.getElementById('resultadoPrazo').textContent = '0 meses';
-    
-    document.getElementById('resultadoVlrTaxa').textContent = formatarMoeda(0);
-    document.getElementById('resultadoTaxaPerc').textContent = `${TAXA_PADRAO_PERC}%`;
-    
-    document.getElementById('resultadoDividaBruta').textContent = formatarMoeda(0);
-    document.getElementById('resultadoSaldoDevedor').textContent = formatarMoeda(0);
-    
-    // Limpa o link do botão de ação
-    document.getElementById('actionButton').href = '#';
-}
-
-function exibirErro(mensagem) {
-    limparResultados();
-    document.getElementById('mensagemErro').textContent = mensagem;
-}
-
-function calcularProposta() {
-    // 1. Coleta de dados de entrada
-    const SELECT_CATEGORIA = document.getElementById('categoria');
-    const CATEGORIA_VALUE = SELECT_CATEGORIA.value;
-    const CATEGORIA_TEXTO = SELECT_CATEGORIA.options[SELECT_CATEGORIA.selectedIndex].text; 
-    
-    const V_CREDITO = parseMonetary(document.getElementById('vlrCredito').value);
-    const V_ENTRADA = parseMonetary(document.getElementById('vlrEntrada').value);
-    const V_PARCELA = parseMonetary(document.getElementById('vlrParcela').value);
-    
-    const TAXA_INFO = obterTaxa(CATEGORIA_VALUE);
-    const TAXA_ADMINISTRATIVA_PERC = TAXA_INFO.percentual;
-    const TAXA_ADMINISTRATIVA = TAXA_INFO.decimal;
-    
-    document.getElementById('mensagemErro').textContent = '';
-
-    // 2. Validações de Regra de Entrada (15% a 30%)
-    if (V_CREDITO <= 0 || V_PARCELA <= 0) {
-        exibirErro("Por favor, preencha o Valor do Crédito e o Valor da Parcela.");
+    if (nome.length < 3) {
+        exibirErro("Por favor, digite seu nome completo para prosseguir.");
+        nomeInput.focus();
         return;
     }
     
-    const MIN_ENTRADA_PERC = 0.15;
+    const primeiroNome = nome.split(' ')[0];
+    document.getElementById('welcomeTitle').textContent = `Muito prazer, ${primeiroNome}!`; 
+
+    showNextStep('step2');
+}
+
+function validateStep2() {
+    const localInput = document.getElementById('localizacao');
+    const local = localInput.value.trim();
+
+    if (local.length < 3) {
+        exibirErro("Por favor, informe sua Cidade/Estado para prosseguir.");
+        localInput.focus();
+        return;
+    }
+    
+    document.getElementById('welcomeTitle').textContent = 'Simulador de Proposta';
+
+    showNextStep('step3'); 
+}
+
+function validateStep4() {
+    const vlrCreditoInput = document.getElementById('vlrCredito');
+    const vlrCredito = parseMonetary(vlrCreditoInput.value);
+
+    if (vlrCredito <= 0) {
+        exibirErro("O valor do crédito deve ser maior que R$ 0,00 para continuar.");
+        vlrCreditoInput.focus();
+        return;
+    }
+    showNextStep('step5');
+}
+
+function validateStep5() {
+    const V_CREDITO = parseMonetary(document.getElementById('vlrCredito').value);
+    const V_ENTRADA = parseMonetary(document.getElementById('vlrEntrada').value); 
+
+    if (V_CREDITO <= 0) {
+        exibirErro("Erro: O valor do crédito não foi definido. Volte ao passo 4.");
+        return; 
+    }
+    
+    const MIN_ENTRADA_PERC = 0.10; // 10%
     const MAX_ENTRADA_PERC = 0.30;
     const V_ENTRADA_MIN = V_CREDITO * MIN_ENTRADA_PERC;
     const V_ENTRADA_MAX = V_CREDITO * MAX_ENTRADA_PERC;
 
-    if ((V_ENTRADA < V_ENTRADA_MIN && V_ENTRADA > 0) || V_ENTRADA > V_ENTRADA_MAX) {
-        let msg = (V_ENTRADA < V_ENTRADA_MIN) ? 
-            `A entrada mínima é de ${formatarMoeda(V_ENTRADA_MIN)} (${(MIN_ENTRADA_PERC * 100)}% do crédito).` : 
-            `A entrada máxima permitida é de ${formatarMoeda(V_ENTRADA_MAX)} (${(MAX_ENTRADA_PERC * 100)}% do crédito).`;
-        exibirErro(msg);
+    if (V_ENTRADA > 0) {
+        if (V_ENTRADA < V_ENTRADA_MIN || V_ENTRADA > V_ENTRADA_MAX) {
+            let msg = (V_ENTRADA < V_ENTRADA_MIN) ? 
+                `A entrada mínima é de ${formatarMoeda(V_ENTRADA_MIN)} (${(MIN_ENTRADA_PERC * 100)}% do crédito).` : 
+                `A entrada máxima permitida é de ${formatarMoeda(V_ENTRADA_MAX)} (${(MAX_ENTRADA_PERC * 100)}% do crédito).`;
+            exibirErro(msg);
+            document.getElementById('vlrEntrada').focus();
+            return;
+        }
+    } 
+
+    showNextStep('step6');
+}
+
+// ====================================================================
+// FUNÇÃO DE CÁLCULO PRINCIPAL E ENVIO
+// ====================================================================
+
+function calcularProposta() {
+    // 1. Coleta de dados
+    const NOME_CLIENTE = document.getElementById('nomeCliente').value.trim();
+    const LOCALIZACAO = document.getElementById('localizacao').value.trim();
+    const SELECT_CATEGORIA = document.getElementById('categoria');
+    const CATEGORIA_TEXTO = SELECT_CATEGORIA.options[SELECT_CATEGORIA.selectedIndex].text; 
+    const V_CREDITO = parseMonetary(document.getElementById('vlrCredito').value);
+    const V_ENTRADA = parseMonetary(document.getElementById('vlrEntrada').value);
+    const V_PARCELA = parseMonetary(document.getElementById('vlrParcela').value);
+    const TAXA_INFO = obterTaxa(SELECT_CATEGORIA.value);
+    const TAXA_ADMINISTRATIVA_PERC = TAXA_INFO.percentual;
+    
+    // 2. Validação final (antes de calcular)
+    if (V_CREDITO <= 0 || V_PARCELA <= 0) {
+        exibirErro("O valor do crédito e da parcela devem ser maiores que R$ 0,00 para calcular.");
         return;
     }
-
-    document.getElementById('mensagemErro').textContent = '';
-
-    // --- CÁLCULOS PRINCIPAIS ---
+    
+    // --- CÁLCULOS ---
     let PERC_ENTRADA = (V_CREDITO > 0) ? (V_ENTRADA / V_CREDITO) * 100 : 0;
-    const V_TA_TOTAL = V_CREDITO * TAXA_ADMINISTRATIVA;
+    const V_TA_TOTAL = V_CREDITO * TAXA_INFO.decimal;
     const V_DIVIDA_BRUTA = V_CREDITO + V_TA_TOTAL;
     const V_SALDO_DEVEDOR = V_DIVIDA_BRUTA - V_ENTRADA;
     let N_MESES = (V_PARCELA > 0) ? Math.ceil(V_SALDO_DEVEDOR / V_PARCELA) : 0;
     
+    // --- INÍCIO DO SUCESSO ---
+    
+    // CORREÇÃO: Limpa o erro explicitamente ANTES de mostrar o resultado.
+    document.getElementById('mensagemErro').textContent = ''; 
+    
+    // Oculta o passo atual e exibe os resultados
+    document.getElementById('step6').style.display = 'none';
     document.getElementById('resultsBox').style.display = 'block';
-
-    // --- 3. Exibição dos Resultados ---
+    document.getElementById('welcomeTitle').textContent = 'Resultado da Proposta';
+    
+    // 3. Exibição dos Resultados na Tela (Mantido para a interface)
+    document.getElementById('resultadoNomeCliente').textContent = NOME_CLIENTE;
+    document.getElementById('resultadoLocalizacao').textContent = LOCALIZACAO;
     document.getElementById('resultadoCategoria').textContent = CATEGORIA_TEXTO;
     document.getElementById('resultadoCredito').textContent = formatarMoeda(V_CREDITO);
     document.getElementById('resultadoVlrEntrada').textContent = formatarMoeda(V_ENTRADA);
@@ -159,17 +212,14 @@ function calcularProposta() {
     document.getElementById('resultadoSaldoDevedor').textContent = formatarMoeda(V_SALDO_DEVEDOR);
 
 
-    // --- 4. GERAR O LINK DO WHATSAPP (AGORA DINÂMICO) ---
+    // 4. GERAR O LINK DO WHATSAPP (FORMATO FINAL)
     const linkButton = document.getElementById('actionButton');
-    
-    // OBTEM O NÚMERO DINÂMICO DA URL OU O PADRÃO
     const TARGET_WHATSAPP_NUMBER = getWhatsAppNumberFromUrl(); 
     
-    // Constrói a mensagem com formatação
     const mensagemWhatsApp = `
 *PROPOSTA DE CRÉDITO SIMULADA*
     
-Olá! Gostaria de formalizar a seguinte proposta de crédito:
+Olá! Sou *${NOME_CLIENTE}* e gostaria de formalizar a seguinte proposta de crédito:
 
 *Detalhes da Proposta:*
 -------------------------------------
@@ -177,19 +227,23 @@ Olá! Gostaria de formalizar a seguinte proposta de crédito:
 *2. Crédito Solicitado:* ${formatarMoeda(V_CREDITO)}
 *3. Entrada:* ${formatarMoeda(V_ENTRADA)} (${PERC_ENTRADA.toFixed(2)}%)
 *4. Parcela Mensal:* ${formatarMoeda(V_PARCELA)}
+*5. Prazo:* ${N_MESES} meses
 
-*Resultados da Simulação:*
--------------------------------------
-*Prazo Sugerido:* ${N_MESES} meses
-*Saldo Devedor:* ${formatarMoeda(V_SALDO_DEVEDOR)}
-*Taxa Adm. (TA):* ${TAXA_ADMINISTRATIVA_PERC.toFixed(1)}%
+*Localização:* ${LOCALIZACAO}
 
 Por favor, podemos dar o próximo passo para a formalização!
     `.trim(); 
 
-    // Codifica a mensagem para URL e monta o link
     const linkWhatsApp = `https://api.whatsapp.com/send?phone=${TARGET_WHATSAPP_NUMBER}&text=${encodeURIComponent(mensagemWhatsApp)}`;
 
-    // Aplica o link ao botão
     linkButton.href = linkWhatsApp;
 }
+
+
+// ====================================================================
+// INICIALIZAÇÃO
+// ====================================================================
+document.addEventListener('DOMContentLoaded', () => {
+    showNextStep('step1'); 
+    document.getElementById('categoria').value = '';
+});
