@@ -27,11 +27,11 @@ function getWhatsAppNumberFromUrl() {
 
 // Garante que apenas o passo atual esteja visível
 function showNextStep(nextStepId) {
-    // 1. Limpa e oculta a mensagem de erro de forma imediata (CORREÇÃO DE FLICKER)
+    // 1. Limpa erros e resultados imediatamente para evitar o delay visual/flicker
     document.getElementById('mensagemErro').textContent = ''; 
     document.getElementById('resultsBox').style.display = 'none';
 
-    // 2. Oculta todos os passos
+    // 2. Oculta todos os passos.
     document.querySelectorAll('.input-step').forEach(step => {
         step.style.display = 'none';
     });
@@ -196,7 +196,7 @@ function calcularProposta() {
     
     // --- INÍCIO DO SUCESSO ---
     
-    // CORREÇÃO: Limpa o erro explicitamente ANTES de mostrar o resultado.
+    // Limpa o erro explicitamente ANTES de mostrar o resultado.
     document.getElementById('mensagemErro').textContent = ''; 
     
     // Oculta o passo atual e exibe os resultados
