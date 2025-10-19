@@ -11,12 +11,14 @@ const MAPA_DE_TAXAS = {
     'capital_giro': 20.5,
     'default': 20.5 
 };
+// NÚMERO PADRÃO: Altere este número para o contato principal (DDD + Número)
 const WHATSAPP_NUMBER_DEFAULT = "5541985162191"; 
 
 // ====================================================================
 // FUNÇÕES DE NAVEGAÇÃO E UTILS
 // ====================================================================
 
+// Obtém o número do WhatsApp da URL (?wpp=) ou usa o default
 function getWhatsAppNumberFromUrl() {
     const urlParams = new URLSearchParams(window.location.search);
     let wpp = urlParams.get('wpp');
@@ -25,14 +27,16 @@ function getWhatsAppNumberFromUrl() {
 
 // Garante que apenas o passo atual esteja visível
 function showNextStep(nextStepId) {
+    // 1. Limpa e oculta a mensagem de erro de forma imediata (CORREÇÃO DE FLICKER)
+    document.getElementById('mensagemErro').textContent = ''; 
+    document.getElementById('resultsBox').style.display = 'none';
+
+    // 2. Oculta todos os passos
     document.querySelectorAll('.input-step').forEach(step => {
         step.style.display = 'none';
     });
     
-    // CORREÇÃO: Garante que a caixa de resultados e o erro estejam sempre ocultos/limpos ao mudar de passo
-    document.getElementById('resultsBox').style.display = 'none';
-    document.getElementById('mensagemErro').textContent = ''; 
-    
+    // 3. Exibe o próximo passo
     const nextStep = document.getElementById(nextStepId);
     if (nextStep) {
         nextStep.style.display = 'block';
@@ -134,6 +138,9 @@ function validateStep5() {
     const V_CREDITO = parseMonetary(document.getElementById('vlrCredito').value);
     const V_ENTRADA = parseMonetary(document.getElementById('vlrEntrada').value); 
 
+    // Limpa qualquer erro anterior (ajuda a prevenir flicker)
+    document.getElementById('mensagemErro').textContent = ''; 
+
     if (V_CREDITO <= 0) {
         exibirErro("Erro: O valor do crédito não foi definido. Volte ao passo 4.");
         return; 
@@ -174,7 +181,7 @@ function calcularProposta() {
     const TAXA_INFO = obterTaxa(SELECT_CATEGORIA.value);
     const TAXA_ADMINISTRATIVA_PERC = TAXA_INFO.percentual;
     
-    // 2. Validação final (antes de calcular)
+    // 2. Validação final 
     if (V_CREDITO <= 0 || V_PARCELA <= 0) {
         exibirErro("O valor do crédito e da parcela devem ser maiores que R$ 0,00 para calcular.");
         return;
@@ -197,7 +204,7 @@ function calcularProposta() {
     document.getElementById('resultsBox').style.display = 'block';
     document.getElementById('welcomeTitle').textContent = 'Resultado da Proposta';
     
-    // 3. Exibição dos Resultados na Tela (Mantido para a interface)
+    // 3. Exibição dos Resultados na Tela 
     document.getElementById('resultadoNomeCliente').textContent = NOME_CLIENTE;
     document.getElementById('resultadoLocalizacao').textContent = LOCALIZACAO;
     document.getElementById('resultadoCategoria').textContent = CATEGORIA_TEXTO;
@@ -212,7 +219,7 @@ function calcularProposta() {
     document.getElementById('resultadoSaldoDevedor').textContent = formatarMoeda(V_SALDO_DEVEDOR);
 
 
-    // 4. GERAR O LINK DO WHATSAPP (FORMATO FINAL)
+    // 4. GERAR O LINK DO WHATSAPP (FORMATO FINAL COM NEGRITOS)
     const linkButton = document.getElementById('actionButton');
     const TARGET_WHATSAPP_NUMBER = getWhatsAppNumberFromUrl(); 
     
