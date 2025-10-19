@@ -1,15 +1,19 @@
+/* ======================================================= */
+/* LAYOUT DARK GLASSMORPHISM (IMAGEM RURAL) */
+/* ======================================================= */
+
 /* GERAIS - Aplica a imagem de fundo em todo o corpo */
 body {
     font-family: Arial, sans-serif;
-    display: flex; /* Para centralizar o simulador */
-    justify-content: center; /* Centraliza horizontalmente */
-    align-items: center; /* Centraliza verticalmente */
-    min-height: 100vh; /* Garante que o body ocupe a altura total da tela */
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    min-height: 100vh; 
     margin: 0;
     padding: 20px;
     box-sizing: border-box;
 
-    /* IMAGEM DE FUNDO - Certifique-se que o nome do arquivo está correto */
+    /* IMAGEM DE FUNDO RURAL */
     background-image: url('colheitadeira.jpg'); 
     background-size: cover; 
     background-position: center; 
@@ -19,15 +23,15 @@ body {
 
 .calculator-container {
     width: 100%;
-    max-width: 500px; /* Largura máxima para desktops */
+    max-width: 500px;
     padding: 30px;
     border-radius: 15px;
     text-align: center;
     box-sizing: border-box;
 
-    /* EFEITO GLASSMORPHISM */
+    /* EFEITO DARK GLASSMORPHISM */
     background-color: rgba(0, 0, 0, 0.25); /* Fundo preto/escuro com 25% de opacidade */
-    backdrop-filter: blur(12px); /* Borrão */
+    backdrop-filter: blur(12px); 
     -webkit-backdrop-filter: blur(12px); 
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5); 
@@ -35,11 +39,13 @@ body {
 }
 
 /* Títulos dentro do container */
-.calculator-container h2,
+.calculator-container h2#welcomeTitle,
 .results-box h3 {
     color: #fff; 
     margin-bottom: 20px;
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    /* Mantém a altura fixa para evitar pulos no layout */
+    min-height: 24px; 
 }
 
 /* Estilos para as labels (TÍTULO DE CADA INPUT) */
@@ -47,26 +53,25 @@ body {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
-    /* Cor branca reforçada para evitar acinzentamento */
     color: #fff !important; 
     text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7); 
+    text-align: left;
 }
 
 /* Estilos para os inputs e selects (campos de digitação) */
 .input-group input, 
 .input-group select {
-    width: calc(100% - 20px);
+    width: 100%;
     padding: 10px;
     margin-bottom: 15px;
     border: 1px solid rgba(255, 255, 255, 0.4); 
     border-radius: 6px;
     box-sizing: border-box;
     
-    background-color: rgba(255, 255, 255, 0.9); /* Fundo quase branco */
+    background-color: rgba(255, 255, 255, 0.9); 
     
-    color: #000; /* Texto digitado preto */
+    color: #000; 
     font-weight: bold; 
-    
     outline: none;
 }
 /* Placeholder dos inputs */
@@ -74,15 +79,14 @@ body {
     color: #333; 
     font-weight: normal; 
 }
-
 /* Altera a cor e o estilo do texto dentro de CADA OPÇÃO (dropdown) */
 .input-group select option {
     color: #000;
     font-weight: bold; 
 }
 
-/* Estilo para o botão "Calcular Proposta" */
-button {
+/* Estilo para o botão "Calcular Proposta" e "Próximo" */
+button, .next-step-btn, .calculate-btn {
     background-color: #4CAF50;
     color: white;
     padding: 12px 20px;
@@ -93,12 +97,12 @@ button {
     font-weight: bold;
     transition: background-color 0.3s ease, transform 0.2s ease;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-    /* Garante que o botão Calcular sempre tenha 100% da largura, igual ao botão de ação */
-    width: 100%; 
+    width: 100%;
     box-sizing: border-box;
+    margin-top: 10px; 
 }
 
-button:hover {
+button:hover, .next-step-btn:hover, .calculate-btn:hover {
     background-color: #45a049;
     transform: translateY(-2px);
 }
@@ -113,7 +117,7 @@ button:hover {
 .results-box p {
     margin: 8px 0;
     text-align: left;
-    color: #fff; /* Texto dos resultados principal branco */
+    color: #fff; 
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -148,29 +152,24 @@ hr {
 .taxa-explicativa {
     font-size: 0.8em;
     font-weight: normal;
-    color: #fff; /* Cor BRANCA sólida */
+    color: #fff; 
     display: block;
     margin-top: 2px;
     text-shadow: none;
 }
 
-/* ======================================================= */
-/* ESTILO PARA O BOTÃO DE AÇÃO (WHATSAPP) - IDÊNTICO AO BOTÃO ACIMA */
-/* ======================================================= */
-
+/* ESTILO PARA O BOTÃO DE AÇÃO (WHATSAPP) */
 .action-button-container {
     margin-top: 20px;
     margin-bottom: 5px;
 }
 
 #actionButton {
-    /* Faz o link (<a>) ter o mesmo visual de um botão */
     display: inline-block;
     width: 100%;
     text-align: center;
     text-decoration: none; 
     
-    /* Herda o estilo do <button> principal */
     background-color: #4CAF50; 
     color: white;
     padding: 12px 20px;
@@ -187,9 +186,7 @@ hr {
 #actionButton:hover {
     background-color: #45a049;
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.5);
 }
-
 
 /* Mídias queries para responsividade */
 @media (max-width: 600px) {
