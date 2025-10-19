@@ -13,7 +13,7 @@ body {
     padding: 20px;
     box-sizing: border-box;
 
-    /* IMAGEM DE FUNDO RURAL */
+    /* IMAGEM DE FUNDO RURAL: Troque a URL abaixo pela sua imagem */
     background-image: url('colheitadeira.jpg'); 
     background-size: cover; 
     background-position: center; 
@@ -87,6 +87,9 @@ body {
 
 /* Estilo para o botão "Calcular Proposta" e "Próximo" */
 button, .next-step-btn, .calculate-btn {
+    /* CORREÇÃO MOBILE: Garante que o clique seja rápido e não seja interpretado como zoom/gesto */
+    touch-action: manipulation; 
+    
     background-color: #4CAF50;
     color: white;
     padding: 12px 20px;
@@ -165,6 +168,9 @@ hr {
 }
 
 #actionButton {
+    /* CORREÇÃO MOBILE: Garante que o clique seja rápido e não seja interpretado como zoom/gesto */
+    touch-action: manipulation; 
+
     display: inline-block;
     width: 100%;
     text-align: center;
